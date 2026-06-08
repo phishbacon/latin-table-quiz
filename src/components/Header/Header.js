@@ -1,41 +1,30 @@
-import React, { Fragment } from 'react'
-import Nav from 'react-bootstrap/Nav'
-import Navbar from 'react-bootstrap/Navbar'
+import React from 'react'
+import Link from 'next/link'
 
-const authenticatedOptions = (
-  <Fragment>
-    <Nav.Link href="#change-password">Change Password</Nav.Link>
-    <Nav.Link href="#sign-out">Sign Out</Nav.Link>
-  </Fragment>
-)
-
-const unauthenticatedOptions = (
-  <Fragment>
-    {/* <Nav.Link href="#sign-up">Sign Up</Nav.Link>
-    <Nav.Link href="#sign-in">Sign In</Nav.Link> */}
-  </Fragment>
-)
-
-const alwaysOptions = (
-  <Fragment>
-    <Nav.Link href="#/">Home</Nav.Link>
-  </Fragment>
-)
+const navLinkClass = 'rounded-md px-3 py-1.5 text-sm font-medium text-primary-foreground/90 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground'
 
 const Header = ({ user }) => (
-  <Navbar bg="primary" variant="dark" expand="md">
-    <Navbar.Brand href="#">
-      Latin Table Quiz
-    </Navbar.Brand>
-    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-    <Navbar.Collapse id="basic-navbar-nav">
-      <Nav className="ml-auto">
-        { user && <span className="navbar-text mr-2">Welcome, {user.email}</span>}
-        { alwaysOptions }
-        { user ? authenticatedOptions : unauthenticatedOptions }
-      </Nav>
-    </Navbar.Collapse>
-  </Navbar>
+  <header className='bg-primary text-primary-foreground'>
+    <div className='container mx-auto flex flex-wrap items-center gap-4 px-4 py-3'>
+      <Link href='/' className='text-lg font-semibold'>
+        Latin Table Quiz
+      </Link>
+      <nav className='ml-auto flex flex-wrap items-center gap-2'>
+        {user && (
+          <span className='mr-2 text-sm text-primary-foreground/80'>
+            Welcome, {user.email}
+          </span>
+        )}
+        <Link href='/' className={navLinkClass}>Home</Link>
+        {user && (
+          <>
+            <Link href='/change-password' className={navLinkClass}>Change Password</Link>
+            <Link href='/sign-out' className={navLinkClass}>Sign Out</Link>
+          </>
+        )}
+      </nav>
+    </div>
+  </header>
 )
 
 export default Header

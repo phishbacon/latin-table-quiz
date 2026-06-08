@@ -1,0 +1,72 @@
+.gridContainer {
+  display: grid;
+  grid-template-columns: 2fr 5fr 5fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 0 16px;
+  margin: 0;
+  grid-template-areas:
+    ". singular-title plural-title"
+    "nominative-label nominative-singular nominative-plural"
+    "genitive-label genitive-singular genitive-plural"
+    "dative-label dative-singular dative-plural"
+    "accusative-label accusative-singular accusative-plural"
+    "ablative-label ablative-singular ablative-plural"
+    ". left-button right-button";
+}
+
+.gridContainerVocative {
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-areas:
+    ". singular-title plural-title"
+    "nominative-label nominative-singular nominative-plural"
+    "genitive-label genitive-singular genitive-plural"
+    "dative-label dative-singular dative-plural"
+    "accusative-label accusative-singular accusative-plural"
+    "ablative-label ablative-singular ablative-plural"
+    "vocative-label vocative-singular vocative-plural"
+    ". left-button right-button";
+}
+
+.gridContainer > div,
+.gridContainerVocative > div {
+  min-height: 84px;
+}
+
+.singularTitle { grid-area: singular-title; }
+.pluralTitle { grid-area: plural-title; }
+
+.nominativeLabel { grid-area: nominative-label; }
+.genitiveLabel { grid-area: genitive-label; }
+.dativeLabel { grid-area: dative-label; }
+.accusativeLabel { grid-area: accusative-label; }
+.ablativeLabel { grid-area: ablative-label; }
+.vocativeLabel { grid-area: vocative-label; }
+
+.nominativeSingular { grid-area: nominative-singular; }
+.genitiveSingular { grid-area: genitive-singular; }
+.dativeSingular { grid-area: dative-singular; }
+.accusativeSingular { grid-area: accusative-singular; }
+.ablativeSingular { grid-area: ablative-singular; }
+.vocativeSingular { grid-area: vocative-singular; }
+
+.nominativePlural { grid-area: nominative-plural; }
+.genitivePlural { grid-area: genitive-plural; }
+.dativePlural { grid-area: dative-plural; }
+.accusativePlural { grid-area: accusative-plural; }
+.ablativePlural { grid-area: ablative-plural; }
+.vocativePlural { grid-area: vocative-plural; }
+
+.leftButton { grid-area: left-button; }
+.rightButton { grid-area: right-button; }
+
+@media (max-width: 575.98px) {
+  .gridContainer,
+  .gridContainerVocative {
+    display: block;
+  }
+
+  .gridContainer > div,
+  .gridContainerVocative > div {
+    min-height: inherit;
+  }
+}

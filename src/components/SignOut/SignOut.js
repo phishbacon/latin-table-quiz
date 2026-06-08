@@ -1,26 +1,26 @@
-import { Component } from 'react'
-import { withRouter } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 import { signOut } from '../../api/auth'
+import { useAppContext } from '../../context/AppContext'
 import messages from '../AutoDismissAlert/messages'
 
-class SignOut extends Component {
-  componentDidMount () {
-    const { msgAlert, history, clearUser, user } = this.props
+const SignOut = () => {
+  const router = useRouter()
+  const { msgAlert, clearUser, user } = useAppContext()
 
+  useEffect(() => {
     signOut(user)
       .finally(() => msgAlert({
         heading: 'Signed Out Successfully',
         message: messages.signOutSuccess,
         variant: 'success'
       }))
-      .finally(() => history.push('/'))
+      .finally(() => router.push('/'))
       .finally(() => clearUser())
-  }
+  }, [clearUser, msgAlert, router, user])
 
-  render () {
-    return ''
-  }
+  return null
 }
 
-export default withRouter(SignOut)
+export default SignOut

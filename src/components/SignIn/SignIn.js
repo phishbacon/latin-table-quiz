@@ -1,41 +1,40 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
+import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 
 import { signIn } from '../../api/auth'
+import { useAppContext } from '../../context/AppContext'
 import messages from '../AutoDismissAlert/messages'
 
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
-class SignIn extends Component {
-  constructor (props) {
-    super(props)
+const SignIn = () => {
+  const router = useRouter()
+  const { msgAlert, setUser } = useAppContext()
+  const [form, setForm] = useState({
+    email: '',
+    password: ''
+  })
 
-    this.state = {
-      email: '',
-      password: ''
-    }
-  }
-
-  handleChange = event => this.setState({
+  const handleChange = event => setForm({
+    ...form,
     [event.target.name]: event.target.value
   })
 
-  onSignIn = event => {
+  const onSignIn = event => {
     event.preventDefault()
 
-    const { msgAlert, history, setUser } = this.props
-
-    signIn(this.state)
+    signIn(form)
       .then(res => setUser(res.data.user))
       .then(() => msgAlert({
         heading: 'Sign In Success',
         message: messages.signInSuccess,
         variant: 'success'
       }))
-      .then(() => history.push('/'))
+      .then(() => router.push('/'))
       .catch(error => {
-        this.setState({ email: '', password: '' })
+        setForm({ email: '', password: '' })
         msgAlert({
           heading: 'Sign In Failed with error: ' + error.message,
           message: messages.signInFailure,
@@ -44,47 +43,38 @@ class SignIn extends Component {
       })
   }
 
-  render () {
-    const { email, password } = this.state
-
-    return (
-      <div className="row">
-        <div className="col-sm-10 col-md-8 mx-auto mt-5">
-          <h3>Sign In</h3>
-          <Form onSubmit={this.onSignIn}>
-            <Form.Group controlId="email">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                required
-                type="email"
-                name="email"
-                value={email}
-                placeholder="Enter email"
-                onChange={this.handleChange}
-              />
-            </Form.Group>
-            <Form.Group controlId="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                required
-                name="password"
-                value={password}
-                type="password"
-                placeholder="Password"
-                onChange={this.handleChange}
-              />
-            </Form.Group>
-            <Button
-              variant="primary"
-              type="submit"
-            >
-              Submit
-            </Button>
-          </Form>
+  return (
+    <div className='mx-auto mt-10 max-w-lg space-y-6'>
+      <h3 className='text-2xl font-semibold tracking-tight'>Sign In</h3>
+      <form onSubmit={onSignIn} className='space-y-4'>
+        <div className='space-y-2'>
+          <Label htmlFor='email'>Email address</Label>
+          <Input
+            id='email'
+            required
+            type='email'
+            name='email'
+            value={form.email}
+            placeholder='Enter email'
+            onChange={handleChange}
+          />
         </div>
-      </div>
-    )
-  }
+        <div className='space-y-2'>
+          <Label htmlFor='password'>Password</Label>
+          <Input
+            id='password'
+            required
+            name='password'
+            value={form.password}
+            type='password'
+            placeholder='Password'
+            onChange={handleChange}
+          />
+        </div>
+        <Button type='submit'>Submit</Button>
+      </form>
+    </div>
+  )
 }
 
-export default withRouter(SignIn)
+export default SignIn

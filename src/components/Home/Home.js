@@ -1,21 +1,18 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import Button from 'react-bootstrap/Button'
+import Link from 'next/link'
 
-const Home = () => {
-  return (
-    <div className="row">
-      <div className="col-sm-10 col-md-8 mx-auto mt-5">
-        <h1>Latin Table Quiz</h1>
-        <div>Practice Latin grammar tables using the Ranieri-Dowling method.</div>
-        <Link to='/practice-options'>
-          <Button className="mt-3" variant="primary" type="submit">
-            Practice
-          </Button>
-        </Link>
-      </div>
-    </div>
-  )
-}
+import { Button } from '@/components/ui/button'
+
+const Home = () => (
+  <div className='mx-auto mt-10 max-w-2xl space-y-4'>
+    <h1 className='text-4xl font-bold tracking-tight'>Latin Table Quiz</h1>
+    <p className='text-muted-foreground'>
+      Practice Latin grammar tables using the Ranieri-Dowling method.
+    </p>
+    <Button asChild className='mt-3'>
+      <Link href='/practice-options'>Practice</Link>
+    </Button>
+  </div>
+)
 
 export default Home

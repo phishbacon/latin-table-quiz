@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "jsx": "preserve",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "target": "es2020"
+  },
+  "include": ["next-env.d.ts", "pages/**/*", "src/**/*"],
+  "exclude": ["node_modules", ".next"]
+}
