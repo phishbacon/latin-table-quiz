@@ -5,8 +5,9 @@ import { signUp, signIn } from '../../api/auth'
 import { useAppContext } from '../../context/AppContext'
 import messages from '../AutoDismissAlert/messages'
 
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 const SignUp = () => {
   const router = useRouter()
@@ -45,48 +46,47 @@ const SignUp = () => {
   }
 
   return (
-    <div className='row'>
-      <div className='col-sm-10 col-md-8 mx-auto mt-5'>
-        <h3>Sign Up</h3>
-        <Form onSubmit={onSignUp}>
-          <Form.Group controlId='email'>
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              required
-              type='email'
-              name='email'
-              value={form.email}
-              placeholder='Enter email'
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group controlId='password'>
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              required
-              name='password'
-              value={form.password}
-              type='password'
-              placeholder='Password'
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group controlId='passwordConfirmation'>
-            <Form.Label>Password Confirmation</Form.Label>
-            <Form.Control
-              required
-              name='passwordConfirmation'
-              value={form.passwordConfirmation}
-              type='password'
-              placeholder='Confirm Password'
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Button variant='primary' type='submit'>
-            Submit
-          </Button>
-        </Form>
-      </div>
+    <div className='mx-auto mt-10 max-w-lg space-y-6'>
+      <h3 className='text-2xl font-semibold tracking-tight'>Sign Up</h3>
+      <form onSubmit={onSignUp} className='space-y-4'>
+        <div className='space-y-2'>
+          <Label htmlFor='email'>Email address</Label>
+          <Input
+            id='email'
+            required
+            type='email'
+            name='email'
+            value={form.email}
+            placeholder='Enter email'
+            onChange={handleChange}
+          />
+        </div>
+        <div className='space-y-2'>
+          <Label htmlFor='password'>Password</Label>
+          <Input
+            id='password'
+            required
+            name='password'
+            value={form.password}
+            type='password'
+            placeholder='Password'
+            onChange={handleChange}
+          />
+        </div>
+        <div className='space-y-2'>
+          <Label htmlFor='passwordConfirmation'>Password Confirmation</Label>
+          <Input
+            id='passwordConfirmation'
+            required
+            name='passwordConfirmation'
+            value={form.passwordConfirmation}
+            type='password'
+            placeholder='Confirm Password'
+            onChange={handleChange}
+          />
+        </div>
+        <Button type='submit'>Submit</Button>
+      </form>
     </div>
   )
 }

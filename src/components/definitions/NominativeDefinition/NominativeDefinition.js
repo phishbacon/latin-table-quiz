@@ -1,59 +1,35 @@
-import React, { Fragment, useState } from 'react'
+import React from 'react'
 
-import Nav from 'react-bootstrap/Nav'
-import Modal from 'react-bootstrap/Modal'
-import Button from 'react-bootstrap/Button'
-import Card from 'react-bootstrap/Card'
+import CaseDefinition from '../CaseDefinition'
 
-const NominativeDefinition = () => {
-  const [show, setShow] = useState(false)
+const Source = () => (
+  <footer className='border-l-2 border-muted pl-3 text-xs text-muted-foreground'>
+    William C. Downling in{' '}
+    <a
+      href='http://www.wcdrutgers.net/Latin.htm'
+      target='_blank'
+      rel='noopener noreferrer'
+      className='underline hover:text-foreground'
+    >
+      <cite title='Latin by the Dowling Method'>Latin by the Dowling Method (Second Concept)</cite>
+    </a>
+  </footer>
+)
 
-  const handleClose = () => setShow(false)
-  const handleShow = () => setShow(true)
-
-  return (
-    <Fragment>
-      <Nav.Link className='text-center  pt-0' eventKey="link-nominative" onClick={handleShow}>
-        nominative<br className='d-none d-sm-block' /> <small>(subject)</small>
-      </Nav.Link>
-
-      <Modal size="lg" show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>The Nominative Case</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Card>
-            <Card.Body className="blockquote w100">
-              <p>
-                A noun occurs in the nominative case when it is the subject of the verb.
-                In the sentence
-              </p>
-
-              <p className='w100 text-center'>
-                <strong>Magister dat librum discipulo.</strong>
-              </p>
-
-              <p>
-                it is the nominative form of <i>magister</i> that tells you that the <i>magister</i> (teacher) is doing the giving here.
-              </p>
-              <footer className="blockquote-footer">
-                William C. Downling in
-                <a href='http://www.wcdrutgers.net/Latin.htm' target='_blank' rel="noopener noreferrer">
-                  <cite title="Latin by the Dowling Method"> Latin by the Dowling Method (Second Concept)
-                  </cite>
-                </a>
-              </footer>
-            </Card.Body>
-          </Card>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </Fragment>
-  )
-}
+const NominativeDefinition = () => (
+  <CaseDefinition name='nominative' subtitle='subject' title='The Nominative Case'>
+    <p>
+      A noun occurs in the nominative case when it is the subject of the verb.
+      In the sentence
+    </p>
+    <p className='text-center'>
+      <strong>Magister dat librum discipulo.</strong>
+    </p>
+    <p>
+      it is the nominative form of <i>magister</i> that tells you that the <i>magister</i> (teacher) is doing the giving here.
+    </p>
+    <Source />
+  </CaseDefinition>
+)
 
 export default NominativeDefinition

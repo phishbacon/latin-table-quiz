@@ -1,52 +1,30 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import Nav from 'react-bootstrap/Nav'
-import Navbar from 'react-bootstrap/Navbar'
 
-const authenticatedOptions = (
-  <Fragment>
-    <Link href='/change-password' passHref legacyBehavior>
-      <Nav.Link>Change Password</Nav.Link>
-    </Link>
-    <Link href='/sign-out' passHref legacyBehavior>
-      <Nav.Link>Sign Out</Nav.Link>
-    </Link>
-  </Fragment>
-)
-
-const unauthenticatedOptions = (
-  <Fragment>
-    {/* <Link href='/sign-up' passHref legacyBehavior>
-      <Nav.Link>Sign Up</Nav.Link>
-    </Link>
-    <Link href='/sign-in' passHref legacyBehavior>
-      <Nav.Link>Sign In</Nav.Link>
-    </Link> */}
-  </Fragment>
-)
-
-const alwaysOptions = (
-  <Fragment>
-    <Link href='/' passHref legacyBehavior>
-      <Nav.Link>Home</Nav.Link>
-    </Link>
-  </Fragment>
-)
+const navLinkClass = 'rounded-md px-3 py-1.5 text-sm font-medium text-primary-foreground/90 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground'
 
 const Header = ({ user }) => (
-  <Navbar bg='primary' variant='dark' expand='md'>
-    <Link href='/' passHref legacyBehavior>
-      <Navbar.Brand>Latin Table Quiz</Navbar.Brand>
-    </Link>
-    <Navbar.Toggle aria-controls='basic-navbar-nav' />
-    <Navbar.Collapse id='basic-navbar-nav'>
-      <Nav className='ml-auto'>
-        {user && <span className='navbar-text mr-2'>Welcome, {user.email}</span>}
-        {alwaysOptions}
-        {user ? authenticatedOptions : unauthenticatedOptions}
-      </Nav>
-    </Navbar.Collapse>
-  </Navbar>
+  <header className='bg-primary text-primary-foreground'>
+    <div className='container mx-auto flex flex-wrap items-center gap-4 px-4 py-3'>
+      <Link href='/' className='text-lg font-semibold'>
+        Latin Table Quiz
+      </Link>
+      <nav className='ml-auto flex flex-wrap items-center gap-2'>
+        {user && (
+          <span className='mr-2 text-sm text-primary-foreground/80'>
+            Welcome, {user.email}
+          </span>
+        )}
+        <Link href='/' className={navLinkClass}>Home</Link>
+        {user && (
+          <>
+            <Link href='/change-password' className={navLinkClass}>Change Password</Link>
+            <Link href='/sign-out' className={navLinkClass}>Sign Out</Link>
+          </>
+        )}
+      </nav>
+    </div>
+  </header>
 )
 
 export default Header

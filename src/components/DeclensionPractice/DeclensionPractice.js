@@ -1,9 +1,13 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import useSound from 'use-sound'
-import { removeMacrons } from '../../utils'
 
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
+
+import { removeMacrons } from '../../utils'
+import styles from './DeclensionPractice.module.css'
 
 import messages from '../AutoDismissAlert/messages'
 import NominativeDefinition from '../definitions/NominativeDefinition/NominativeDefinition'
@@ -13,41 +17,68 @@ import DativeDefinition from '../definitions/DativeDefinition/DativeDefinition'
 import AblativeDefinition from '../definitions/AblativeDefinition/AblativeDefinition'
 import VocativeDefinition from '../definitions/VocativeDefinition/VocativeDefinition'
 
-const getGendersDipslay = genders => genders.map((gender, index) => (
+const definitionByCase = {
+  nominative: NominativeDefinition,
+  genitive: GenitiveDefinition,
+  accusative: AccusativeDefinition,
+  dative: DativeDefinition,
+  ablative: AblativeDefinition,
+  vocative: VocativeDefinition
+}
+
+const labelGridClassMap = {
+  nominative: styles.nominativeLabel,
+  genitive: styles.genitiveLabel,
+  dative: styles.dativeLabel,
+  accusative: styles.accusativeLabel,
+  ablative: styles.ablativeLabel,
+  vocative: styles.vocativeLabel
+}
+
+const fieldGridClassMap = {
+  nominativeSingular: styles.nominativeSingular,
+  genitiveSingular: styles.genitiveSingular,
+  dativeSingular: styles.dativeSingular,
+  accusativeSingular: styles.accusativeSingular,
+  ablativeSingular: styles.ablativeSingular,
+  vocativeSingular: styles.vocativeSingular,
+  nominativePlural: styles.nominativePlural,
+  genitivePlural: styles.genitivePlural,
+  dativePlural: styles.dativePlural,
+  accusativePlural: styles.accusativePlural,
+  ablativePlural: styles.ablativePlural,
+  vocativePlural: styles.vocativePlural
+}
+
+const getGendersDisplay = genders => genders.map((gender, index) => (
   <Fragment key={index}>
-    <span className={gender.toLowerCase()}>{gender}</span>{index !== genders.length - 1 && ', '}
+    <span className={`gender-${gender.toLowerCase()}`}>{gender}</span>
+    {index !== genders.length - 1 && ', '}
   </Fragment>
 ))
 
-const onlyVisibleOnXs = 'd-block d-sm-none'
-const hiddenOnXs = 'd-none d-sm-block'
-
-const DeclensionPractice = ({ practiceQuestion, setRandomPracticeQuestion,
-  useMacrons, practiceMode, practiceType, typeOneHideOthers, typeOneField, shouldPlayAudio }) => {
+const DeclensionPractice = ({
+  practiceQuestion,
+  setRandomPracticeQuestion,
+  useMacrons,
+  practiceMode,
+  practiceType,
+  typeOneHideOthers,
+  typeOneField,
+  shouldPlayAudio
+}) => {
   const [checkedAnswers, setCheckedAnswers] = useState(false)
   const [correct, setCorrect] = useState(false)
   const [attempts, setAttempts] = useState({})
-  const audioUrl = practiceMode === 'one-case' && typeOneField.audioUrl ? typeOneField.audioUrl : practiceQuestion.audioUrl
+  const audioUrl = practiceMode === 'one-case' && typeOneField.audioUrl
+    ? typeOneField.audioUrl
+    : practiceQuestion.audioUrl
   const [playAudio, { stop: stopAudio }] = useSound(audioUrl)
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const useAudioFieldUrlToPlay = () => {
-    const audioFieldUrlToPlay = {}
-    const urlToFieldsArrays = practiceQuestion.fields.map((field) => ([field.audioUrl, useSound(field.audioUrl)[0]]))
-    urlToFieldsArrays.forEach(([fieldAudioUrl, play]) => {
-      audioFieldUrlToPlay[fieldAudioUrl] = play
-    })
-    if (practiceQuestion.fields.length === 10) {
-      useSound(audioUrl)
-    }
-    return audioFieldUrlToPlay
-  }
-  const audioFieldUrlToPlay = useAudioFieldUrlToPlay()
 
   const [message, setMessage] = useState('')
 
   const { word, group, type, genders, fields } = practiceQuestion
-  const gender = getGendersDipslay(genders)
+  const gender = getGendersDisplay(genders)
   const hasVocativeCase = fields.some(field => field.case === 'Vocative')
 
   useEffect(() => {
@@ -77,7 +108,9 @@ const DeclensionPractice = ({ practiceQuestion, setRandomPracticeQuestion,
 
   useEffect(() => {
     if (!checkedAnswers && practiceMode === 'one-case') {
-      const otherFields = fields.filter(field => field.case !== typeOneField.case || field.number !== typeOneField.number)
+      const otherFields = fields.filter(field => (
+        field.case !== typeOneField.case || field.number !== typeOneField.number
+      ))
       const newAttempts = {}
 
       for (const field of otherFields) {
@@ -112,68 +145,58 @@ const DeclensionPractice = ({ practiceQuestion, setRandomPracticeQuestion,
     return sanitizedAttempt === sanitizedAnswer
   }
 
-  const getLabelJsx = label => {
-    if (label.toLowerCase() === 'nominative') {
-      return <NominativeDefinition />
-    } else if (label.toLowerCase() === 'genitive') {
-      return <GenitiveDefinition />
-    } else if (label.toLowerCase() === 'accusative') {
-      return <AccusativeDefinition />
-    } else if (label.toLowerCase() === 'dative') {
-      return <DativeDefinition />
-    } else if (label.toLowerCase() === 'ablative') {
-      return <AblativeDefinition />
-    } else if (label.toLowerCase() === 'vocative') {
-      return <VocativeDefinition />
-    }
-
-    return label
+  const renderDefinition = caseName => {
+    const Component = definitionByCase[caseName.toLowerCase()]
+    return Component ? <Component /> : caseName
   }
 
-  const getInputBg = (attempt = '', field) => {
+  const isSpeakSkippedField = field => (
+    practiceType === 'speak' && (
+      practiceMode === 'all-cases' ||
+      (typeOneField.case === field.case && typeOneField.number === field.number)
+    )
+  )
+
+  const getInputClasses = (attempt = '', field) => {
     if (!checkedAnswers) {
       return ''
-    } else if (practiceType === 'speak' && (practiceMode === 'all-cases' || (typeOneField.case === field.case && typeOneField.number === field.number))) {
-      return 'bg-secondary text-white placeholder-white'
-    } else if (isCorrect(attempt, field.answer)) {
-      return 'bg-success text-white placeholder-white'
     }
-
-    return 'bg-danger text-white placeholder-white'
+    if (isSpeakSkippedField(field)) {
+      return 'bg-zinc-500 border-zinc-500 text-white placeholder:text-white'
+    }
+    if (isCorrect(attempt, field.answer)) {
+      return 'bg-green-600 border-green-600 text-white placeholder:text-white'
+    }
+    return 'bg-destructive border-destructive text-white placeholder:text-white'
   }
 
   const getCorrectAnswerTextColor = (attempt = '', field) => {
     if (!checkedAnswers) {
       return ''
-    } else if (practiceType === 'speak' && (practiceMode === 'all-cases' || (typeOneField.case === field.case && typeOneField.number === field.number))) {
-      return 'text-secondary'
-    } else if (isCorrect(attempt, field.answer)) {
-      return 'text-success'
     }
-
-    return 'text-danger'
+    if (isSpeakSkippedField(field)) {
+      return 'text-zinc-500'
+    }
+    if (isCorrect(attempt, field.answer)) {
+      return 'text-green-600'
+    }
+    return 'text-destructive'
   }
 
   const getCorrectAnswerTextJsx = (attempt = '', field) => {
     const textColor = getCorrectAnswerTextColor(attempt, field)
-    /* TODO Re-enable after re-recording audio */
-    // const handlePlayButton = () => {
-    //   stopAudio()
-    //   audioFieldUrlToPlay[field.audioUrl]()
-    // }
     return checkedAnswers && (!isCorrect(attempt, field.answer) || practiceType === 'speak') && (
-      <Form.Text className={`${textColor} answer-text`}>
+      <p className={cn('mt-1 text-sm', textColor)}>
         Correct answer: {field.answer}&nbsp;
-        {/* TODO Re-enable after re-recording audio */}
-        {/* <span className='play-button' onClick={handlePlayButton}>
-          ▶️
-        </span> */}
-      </Form.Text>
+      </p>
     )
   }
 
   const handleCheckAnswers = () => {
-    const checkCorrect = fields.every(field => isCorrect(attempts[`${field.case.toLowerCase()}${field.number}`], field.answer))
+    const checkCorrect = fields.every(field => isCorrect(
+      attempts[`${field.case.toLowerCase()}${field.number}`],
+      field.answer
+    ))
 
     setCheckedAnswers(true)
 
@@ -202,30 +225,50 @@ const DeclensionPractice = ({ practiceQuestion, setRandomPracticeQuestion,
     resetState()
   }
 
-  const handleChange = event => {
-    event.persist()
-    setAttempts(prevAttempts => ({ ...prevAttempts, [event.target.name]: event.target.value }))
-  }
-
   const handleKeyDown = event => {
     if (event.key === 'Enter' && !checkedAnswers) {
+      // Prevent the browser's default Enter handling. Without this, after
+      // setCheckedAnswers(true) re-renders and the focus useEffect moves
+      // focus to the Try Again / Next Practice button, the same Enter
+      // keystroke triggers a click on the newly focused button, which
+      // immediately resets state.
+      event.preventDefault()
       handleCheckAnswers()
     }
   }
 
+  const handleChange = event => {
+    event.persist()
+    setAttempts(prevAttempts => ({
+      ...prevAttempts,
+      [event.target.name]: event.target.value
+    }))
+  }
+
   const jsxOfFields = currentFields => currentFields.map((field, index) => {
-    const caseNumberShishkabob = `${field.case.toLowerCase()}-${field.number.toLowerCase()}`
-    const caseNumberCamel = `${field.case.toLowerCase()}${field.number}`
-    const typeOneHidden = practiceMode === 'one-case' && typeOneField && typeOneHideOthers && (field.case !== typeOneField.case || field.number !== typeOneField.number) && !checkedAnswers
-    const typeOneHiddenClass = typeOneHidden ? 'd-none' : ''
+    const caseLower = field.case.toLowerCase()
+    const numberLower = field.number.toLowerCase()
+    const caseNumberShishkabob = `${caseLower}-${numberLower}`
+    const caseNumberCamel = `${caseLower}${field.number}`
+    const typeOneHidden = practiceMode === 'one-case' && typeOneField &&
+      typeOneHideOthers &&
+      (field.case !== typeOneField.case || field.number !== typeOneField.number) &&
+      !checkedAnswers
     const placeholderLabel = practiceType === 'type' ? 'Enter' : 'Say'
     const disabled = practiceType === 'speak'
+    const gridAreaClass = fieldGridClassMap[caseNumberCamel]
+
     return (
-      <div key={index} className={caseNumberShishkabob}>
-        <Form.Group className={typeOneHiddenClass}>
-          <Form.Label className={onlyVisibleOnXs}><h5>{getLabelJsx(field.case)}</h5></Form.Label>
-          <Form.Control
-            className={getInputBg(attempts[caseNumberCamel], field)}
+      <div key={index} className={gridAreaClass}>
+        <div className={typeOneHidden ? 'hidden' : 'space-y-1'}>
+          <Label
+            htmlFor={caseNumberShishkabob}
+            className='block text-base font-semibold sm:hidden'
+          >
+            {renderDefinition(field.case)}
+          </Label>
+          <Input
+            className={getInputClasses(attempts[caseNumberCamel], field)}
             required
             type='text'
             name={caseNumberCamel}
@@ -237,78 +280,107 @@ const DeclensionPractice = ({ practiceQuestion, setRandomPracticeQuestion,
             onKeyDown={handleKeyDown}
             disabled={disabled}
           />
-          {getCorrectAnswerTextJsx(attempts[`${field.case.trim().toLowerCase()}${field.number}`], field)}
-        </Form.Group>
+          {getCorrectAnswerTextJsx(attempts[caseNumberCamel], field)}
+        </div>
       </div>
     )
   })
 
-  const showNumberLabelCss = (number) => {
-    const hide = practiceMode === 'one-case' && typeOneField && typeOneHideOthers && number !== typeOneField.number && !checkedAnswers
-    return hide ? 'd-none' : ''
+  const showNumberLabelCss = number => {
+    const hide = practiceMode === 'one-case' && typeOneField && typeOneHideOthers &&
+      number !== typeOneField.number && !checkedAnswers
+    return hide ? 'hidden' : ''
   }
+
   const singularFieldsJsx = jsxOfFields(fields.filter(field => field.number === 'Singular'))
   const pluralFieldsJsx = jsxOfFields(fields.filter(field => field.number === 'Plural'))
+
   const getNotes = () => {
-    let questionNotes = ''
-
-    if (group === '1st') {
-      questionNotes += 'usually feminine ending in -a'
-    } else if (group === '2nd') {
-      questionNotes += 'usually masculine ending in -us/-er or neuter ending in -um'
-    } else if (group === '3rd') {
-      questionNotes += 'largest group of nouns'
-    } else if (group === '4th') {
-      questionNotes += 'predominant letter in the ending forms of this declension is u'
-    } else if (group === '5th') {
-      questionNotes += 'e stems'
-    }
-
-    return questionNotes
+    if (group === '1st') return 'usually feminine ending in -a'
+    if (group === '2nd') return 'usually masculine ending in -us/-er or neuter ending in -um'
+    if (group === '3rd') return 'largest group of nouns'
+    if (group === '4th') return 'predominant letter in the ending forms of this declension is u'
+    if (group === '5th') return 'e stems'
+    return ''
   }
   const notes = getNotes()
 
+  const labelOrder = hasVocativeCase
+    ? ['nominative', 'genitive', 'dative', 'accusative', 'ablative', 'vocative']
+    : ['nominative', 'genitive', 'dative', 'accusative', 'ablative']
+
   return (
     <Fragment>
-      <h3>{word}</h3>
-      <h6>{group} {type} {checkedAnswers && <Fragment>({notes})</Fragment>}</h6>
-      <h6>{gender}</h6>
-      <div className={`grid-container mt-4 ${hasVocativeCase ? 'grid-container-vocative' : ''}`}>
-        <div className={`nominative-label ${hiddenOnXs}`}><h5 className='text-right'><NominativeDefinition /></h5></div>
-        <div className={`genitive-label ${hiddenOnXs}`}><h5 className='text-right'><GenitiveDefinition /></h5></div>
-        <div className={`dative-label ${hiddenOnXs}`}><h5 className='text-right'><DativeDefinition /></h5></div>
-        <div className={`ablative-label ${hiddenOnXs}`}><h5 className='text-right'><AblativeDefinition /></h5></div>
-        <div className={`vocative-label ${hasVocativeCase ? hiddenOnXs : 'd-none'}`}><h5 className='text-right'><VocativeDefinition /></h5></div>
-        <div className={`accusative-label ${hiddenOnXs}`}><h5 className='text-right'><AccusativeDefinition /></h5></div>
+      <h3 className='text-2xl font-semibold'>{word}</h3>
+      <h6 className='text-sm text-muted-foreground'>
+        {group} {type} {checkedAnswers && <Fragment>({notes})</Fragment>}
+      </h6>
+      <h6 className='text-sm'>{gender}</h6>
+      <div
+        className={cn(
+          styles.gridContainer,
+          'mt-4',
+          hasVocativeCase && styles.gridContainerVocative
+        )}
+      >
+        {labelOrder.map(caseName => {
+          const Component = definitionByCase[caseName]
+          return (
+            <div
+              key={caseName}
+              className={cn(
+                labelGridClassMap[caseName],
+                'hidden text-right sm:flex sm:items-center sm:justify-end'
+              )}
+            >
+              <Component />
+            </div>
+          )
+        })}
 
-        <div className='singular-title text-center'><h5 className={showNumberLabelCss('Singular')}>Singular</h5></div>
+        <div className={cn(styles.singularTitle, 'flex items-center justify-center')}>
+          <h5 className={cn('text-lg font-semibold', showNumberLabelCss('Singular'))}>
+            Singular
+          </h5>
+        </div>
         {singularFieldsJsx}
 
-        <div className='plural-title text-center'><h5 className={showNumberLabelCss('Plural')}>Plural</h5></div>
+        <div className={cn(styles.pluralTitle, 'flex items-center justify-center')}>
+          <h5 className={cn('text-lg font-semibold', showNumberLabelCss('Plural'))}>
+            Plural
+          </h5>
+        </div>
         {pluralFieldsJsx}
 
-        <div className='left-button'>
+        <div className={styles.leftButton}>
           {checkedAnswers && !correct && (
-            <Button onClick={resetState} variant='secondary' className='btn-block try-again text-white mb-2'>
+            <Button
+              onClick={resetState}
+              variant='secondary'
+              className='try-again mb-2 w-full'
+            >
               Try Again
             </Button>
           )}
         </div>
 
-        <div className='right-button'>
+        <div className={styles.rightButton}>
           {!checkedAnswers && (
-            <Button onClick={handleCheckAnswers} variant='primary' className='btn-block'>
+            <Button onClick={handleCheckAnswers} className='w-full'>
               Check Answers
             </Button>
           )}
           {checkedAnswers && (
-            <Button onClick={handleNextPractice} variant='primary' className='btn-block next-practice mb-2'>
+            <Button
+              onClick={handleNextPractice}
+              className='next-practice mb-2 w-full'
+            >
               Next Practice
             </Button>
           )}
         </div>
       </div>
-      <h6 className='text-center mt-2'>{message}</h6>
+      <h6 className='mt-2 text-center text-sm'>{message}</h6>
     </Fragment>
   )
 }

@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { knuthShuffle as shuffle } from 'knuth-shuffle'
 
@@ -48,7 +48,10 @@ const readJsonOption = (name, fallback) => {
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [msgAlerts, setMsgAlerts] = useState([])
-  const [practiceQuestions, setPracticeQuestions] = useState(() => shuffle([...practiceQuestionsData]))
+  const practiceQuestionsRef = useRef(null)
+  if (practiceQuestionsRef.current === null) {
+    practiceQuestionsRef.current = shuffle([...practiceQuestionsData])
+  }
   const [useMacrons, setUseMacronsState] = useState(BOOLEAN_OPTIONS.useMacrons)
   const [practiceMode, setPracticeModeState] = useState(STRING_OPTIONS.practiceMode)
   const [typeOneHideOthers, setTypeOneHideOthersState] = useState(BOOLEAN_OPTIONS.typeOneHideOthers)
@@ -110,35 +113,29 @@ export const AppProvider = ({ children }) => {
   }, [])
 
   const chooseRandomPracticeQuestion = useCallback((questionType) => {
-    let selectedQuestion
+    const declensions = enabledDeclensions.length > 0 ? enabledDeclensions : ['1st']
+    const questions = practiceQuestionsRef.current
+    const filteredQuestions = questions.filter((question) => (
+      question.type === questionType && declensions.includes(question.group)
+    ))
 
-    setPracticeQuestions((currentQuestions) => {
-      const declensions = enabledDeclensions.length > 0 ? enabledDeclensions : ['1st']
-      const filteredQuestions = currentQuestions.filter((question) => question.type === questionType && declensions.includes(question.group))
+    if (filteredQuestions.length === 0) {
+      return undefined
+    }
 
-      if (filteredQuestions.length === 0) {
-        selectedQuestion = undefined
-        return currentQuestions
-      }
+    const randomQuestion = filteredQuestions[0]
+    const randomQuestionIndex = questions.findIndex((question) => question === randomQuestion)
 
-      const randomQuestionIndex = currentQuestions.findIndex((question) => question === filteredQuestions[0])
-      const randomQuestion = currentQuestions[randomQuestionIndex]
-      const nextQuestions = [...currentQuestions]
+    // Move chosen question to the end of the queue so we cycle through all of them
+    questions.splice(randomQuestionIndex, 1)
+    questions.push(randomQuestion)
 
-      nextQuestions.splice(randomQuestionIndex, 1)
-      nextQuestions.push(randomQuestion)
-
-      selectedQuestion = randomQuestion
-      return nextQuestions
-    })
-
-    return selectedQuestion
+    return randomQuestion
   }, [enabledDeclensions])
 
   const value = useMemo(() => ({
     user,
     msgAlerts,
-    practiceQuestions,
     useMacrons,
     practiceMode,
     typeOneHideOthers,
@@ -159,7 +156,6 @@ export const AppProvider = ({ children }) => {
   }), [
     user,
     msgAlerts,
-    practiceQuestions,
     useMacrons,
     practiceMode,
     typeOneHideOthers,
