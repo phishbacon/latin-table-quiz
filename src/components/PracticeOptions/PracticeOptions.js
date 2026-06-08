@@ -1,20 +1,34 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom'
+import { useRouter } from 'next/router'
 
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
+import { useAppContext } from '../../context/AppContext'
 import messages from '../AutoDismissAlert/messages'
 
-const PracticeOptions = ({ msgAlert, history, useMacrons, setUseMacrons,
-  setPracticeMode, practiceMode, setPracticeType, practiceType, typeOneHideOthers, setTypeOneHideOthers,
-  shouldPlayAudio, setShouldPlayAudio, enabledDeclensions, setEnabledDeclensions }) => {
+const PracticeOptions = () => {
+  const router = useRouter()
+  const {
+    msgAlert,
+    useMacrons,
+    setUseMacrons,
+    setPracticeMode,
+    practiceMode,
+    setPracticeType,
+    practiceType,
+    typeOneHideOthers,
+    setTypeOneHideOthers,
+    shouldPlayAudio,
+    setShouldPlayAudio,
+    enabledDeclensions,
+    setEnabledDeclensions
+  } = useAppContext()
+
   const onStartPractice = event => {
     event.preventDefault()
 
-    // TODO Add options, then set options. Options will likely be stored in App and passed down
-
-    history.push('/practice')
+    router.push('/practice')
     msgAlert({
       heading: 'Starting Practice',
       message: messages.startPracticeSuccess,
@@ -41,8 +55,8 @@ const PracticeOptions = ({ msgAlert, history, useMacrons, setUseMacrons,
   ))
 
   return (
-    <div className="row">
-      <div className="col-sm-10 col-md-8 mx-auto mt-5">
+    <div className='row'>
+      <div className='col-sm-10 col-md-8 mx-auto mt-5'>
         <h3>Practice</h3>
         <h4>Options</h4>
         <Form onSubmit={onStartPractice}>
@@ -59,7 +73,7 @@ const PracticeOptions = ({ msgAlert, history, useMacrons, setUseMacrons,
             checked={shouldPlayAudio}
             onChange={() => setShouldPlayAudio(!shouldPlayAudio)}
           /> */}
-          <br/>
+          <br />
           <h5>Type</h5>
           <Form.Check
             type='radio'
@@ -75,8 +89,8 @@ const PracticeOptions = ({ msgAlert, history, useMacrons, setUseMacrons,
             checked={practiceType === 'speak'}
             onChange={() => setPracticeType('speak')}
           />
-          <br/>
-          <br/>
+          <br />
+          <br />
           <h5>Declensions</h5>
           {declensionJsx}
 
@@ -104,8 +118,8 @@ const PracticeOptions = ({ msgAlert, history, useMacrons, setUseMacrons,
             onChange={() => setPracticeMode('all-cases')}
           />
 
-          <br/>
-          <Button variant="primary" type="submit">
+          <br />
+          <Button variant='primary' type='submit'>
             Start Practice
           </Button>
         </Form>
@@ -114,4 +128,4 @@ const PracticeOptions = ({ msgAlert, history, useMacrons, setUseMacrons,
   )
 }
 
-export default withRouter(PracticeOptions)
+export default PracticeOptions

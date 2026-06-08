@@ -1,18 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import { withRouter } from 'react-router-dom'
 
 import DeclensionPractice from '../DeclensionPractice/DeclensionPractice'
 import { removeElementAtRandom } from '../../utils'
+import { useAppContext } from '../../context/AppContext'
 
-// import messages from '../AutoDismissAlert/messages'
-
-const Practice = ({ msgAlert, history, practiceQuestions, chooseRandomPracticeQuestion,
-  useMacrons, practiceMode, typeOneHideOthers, practiceType, shouldPlayAudio }) => {
+const Practice = () => {
+  const {
+    chooseRandomPracticeQuestion,
+    useMacrons,
+    practiceMode,
+    typeOneHideOthers,
+    practiceType,
+    shouldPlayAudio
+  } = useAppContext()
   const [practiceQuestion, setPracticeQuestion] = useState(null)
   const [typeOneField, setTypeOneField] = useState(null)
 
   const setRandomPracticeQuestion = () => {
     const randomPractice = chooseRandomPracticeQuestion('Declension')
+
+    if (!randomPractice) {
+      setPracticeQuestion(null)
+      setTypeOneField(null)
+      return
+    }
+
     setPracticeQuestion(randomPractice)
     const fieldsCopy = [...randomPractice.fields]
     const fieldToType = removeElementAtRandom(fieldsCopy)
@@ -21,16 +33,14 @@ const Practice = ({ msgAlert, history, practiceQuestions, chooseRandomPracticeQu
 
   useEffect(() => {
     setRandomPracticeQuestion()
-  }, [])
+  }, [chooseRandomPracticeQuestion])
 
   let practiceTypeJsx
-  if (practiceQuestion === null) {
+  if (practiceQuestion === null || typeOneField === null) {
     practiceTypeJsx = <h3>Loading...</h3>
   } else if (practiceQuestion.type === 'Declension') {
     practiceTypeJsx = (
       <DeclensionPractice
-        msgAlert={msgAlert}
-        history={history}
         practiceQuestion={practiceQuestion}
         setRandomPracticeQuestion={setRandomPracticeQuestion}
         useMacrons={useMacrons}
@@ -44,12 +54,12 @@ const Practice = ({ msgAlert, history, practiceQuestions, chooseRandomPracticeQu
   }
 
   return (
-    <div className="row">
-      <div className="col-sm-10 col-md-8 mx-auto mt-5">
+    <div className='row'>
+      <div className='col-sm-10 col-md-8 mx-auto mt-5'>
         {practiceTypeJsx}
       </div>
     </div>
   )
 }
 
-export default withRouter(Practice)
+export default Practice
