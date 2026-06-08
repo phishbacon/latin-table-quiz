@@ -471,7 +471,7 @@ class App extends Component {
             {
               'case': 'Dative',
               'number': 'Plural',
-              'answer': 'rēgībus',
+              'answer': 'rēgibus',
               'audioUrl': 'sounds/03a rex 3rd decl word rēgībus, Latin Summary of Forms (Ranieri) (mp3cut.net).m4a'
             },
             {
@@ -483,7 +483,7 @@ class App extends Component {
             {
               'case': 'Ablative',
               'number': 'Plural',
-              'answer': 'rēgībus',
+              'answer': 'rēgibus',
               'audioUrl': 'sounds/03a rex 3rd decl word rēgībus, Latin Summary of Forms (Ranieri) (mp3cut.net).m4a'
             }
           ]
