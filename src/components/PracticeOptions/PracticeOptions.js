@@ -100,6 +100,25 @@ const PracticeOptions = () => {
         </fieldset>
 
         <fieldset className='space-y-3'>
+          <legend className='text-base font-semibold'>Adjective Declensions</legend>
+          <div className='flex flex-wrap gap-x-6 gap-y-2'>
+            {['1st Adjective', '2nd Adjective', '3rd Adjective'].map(adj => {
+              const id = `adj-${adj}`
+              return (
+                <div key={adj} className='flex items-center gap-2'>
+                  <Checkbox
+                    id={id}
+                    checked={enabledDeclensions.includes(adj)}
+                    onCheckedChange={() => toggleDeclension(adj)}
+                  />
+                  <Label htmlFor={id}>{`${adj} Declension`}</Label>
+                </div>
+              )
+            })}
+          </div>
+        </fieldset>
+
+        <fieldset className='space-y-3'>
           <legend className='text-base font-semibold'>Mode</legend>
           <RadioGroup
             value={practiceMode}
