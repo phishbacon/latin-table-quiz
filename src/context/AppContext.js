@@ -56,7 +56,6 @@ export const AppProvider = ({ children }) => {
   const [practiceMode, setPracticeModeState] = useState(STRING_OPTIONS.practiceMode)
   const [typeOneHideOthers, setTypeOneHideOthersState] = useState(BOOLEAN_OPTIONS.typeOneHideOthers)
   const [practiceType, setPracticeTypeState] = useState(STRING_OPTIONS.practiceType)
-  const [shouldPlayAudio, setShouldPlayAudio] = useState(false)
   const [enabledDeclensions, setEnabledDeclensionsState] = useState([])
 
   useEffect(() => {
@@ -140,7 +139,6 @@ export const AppProvider = ({ children }) => {
     practiceMode,
     typeOneHideOthers,
     practiceType,
-    shouldPlayAudio,
     enabledDeclensions,
     setUser,
     clearUser,
@@ -148,7 +146,6 @@ export const AppProvider = ({ children }) => {
     setPracticeMode,
     setTypeOneHideOthers,
     setPracticeType,
-    setShouldPlayAudio,
     setEnabledDeclensions,
     msgAlert,
     deleteAlert,
@@ -160,7 +157,6 @@ export const AppProvider = ({ children }) => {
     practiceMode,
     typeOneHideOthers,
     practiceType,
-    shouldPlayAudio,
     enabledDeclensions,
     clearUser,
     setUseMacrons,

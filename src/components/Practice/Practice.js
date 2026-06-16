@@ -10,8 +10,7 @@ const Practice = () => {
     useMacrons,
     practiceMode,
     typeOneHideOthers,
-    practiceType,
-    shouldPlayAudio
+    practiceType
   } = useAppContext()
   const [practiceQuestion, setPracticeQuestion] = useState(null)
   const [typeOneField, setTypeOneField] = useState(null)
@@ -48,7 +47,6 @@ const Practice = () => {
         typeOneHideOthers={typeOneHideOthers}
         typeOneField={typeOneField}
         practiceType={practiceType}
-        shouldPlayAudio={shouldPlayAudio}
       />
     )
   }
