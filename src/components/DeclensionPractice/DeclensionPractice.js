@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from 'react'
-import useSound from 'use-sound'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -64,16 +63,11 @@ const DeclensionPractice = ({
   practiceMode,
   practiceType,
   typeOneHideOthers,
-  typeOneField,
-  shouldPlayAudio
+  typeOneField
 }) => {
   const [checkedAnswers, setCheckedAnswers] = useState(false)
   const [correct, setCorrect] = useState(false)
   const [attempts, setAttempts] = useState({})
-  const audioUrl = practiceMode === 'one-case' && typeOneField.audioUrl
-    ? typeOneField.audioUrl
-    : practiceQuestion.audioUrl
-  const [playAudio, { stop: stopAudio }] = useSound(audioUrl)
 
   const [message, setMessage] = useState('')
 
@@ -128,10 +122,6 @@ const DeclensionPractice = ({
       }, 300)
     }
   }, [checkedAnswers, fields, practiceMode, typeOneField])
-
-  useEffect(() => () => {
-    stopAudio()
-  }, [stopAudio])
 
   const isCorrect = (attempt = '', answer) => {
     let sanitizedAttempt = attempt.trim().toLowerCase()
@@ -205,15 +195,10 @@ const DeclensionPractice = ({
       setTimeout(() => setMessage(''), 5000)
     }
 
-    if (shouldPlayAudio) {
-      playAudio()
-    }
-
     setCorrect(checkCorrect)
   }
 
   const resetState = () => {
-    stopAudio()
     setAttempts({})
     setCheckedAnswers(false)
     setCorrect(false)
