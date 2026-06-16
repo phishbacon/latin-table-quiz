@@ -9,8 +9,7 @@ const Practice = () => {
     chooseRandomPracticeQuestion,
     useMacrons,
     practiceMode,
-    typeOneHideOthers,
-    practiceType
+    typeOneHideOthers
   } = useAppContext()
   const [practiceQuestion, setPracticeQuestion] = useState(null)
   const [typeOneField, setTypeOneField] = useState(null)
@@ -46,7 +45,6 @@ const Practice = () => {
         practiceMode={practiceMode}
         typeOneHideOthers={typeOneHideOthers}
         typeOneField={typeOneField}
-        practiceType={practiceType}
       />
     )
   }

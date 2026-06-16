@@ -61,7 +61,6 @@ const DeclensionPractice = ({
   setRandomPracticeQuestion,
   useMacrons,
   practiceMode,
-  practiceType,
   typeOneHideOthers,
   typeOneField
 }) => {
@@ -140,19 +139,9 @@ const DeclensionPractice = ({
     return Component ? <Component /> : caseName
   }
 
-  const isSpeakSkippedField = field => (
-    practiceType === 'speak' && (
-      practiceMode === 'all-cases' ||
-      (typeOneField.case === field.case && typeOneField.number === field.number)
-    )
-  )
-
   const getInputClasses = (attempt = '', field) => {
     if (!checkedAnswers) {
       return ''
-    }
-    if (isSpeakSkippedField(field)) {
-      return 'bg-zinc-500 border-zinc-500 text-white placeholder:text-white'
     }
     if (isCorrect(attempt, field.answer)) {
       return 'bg-green-600 border-green-600 text-white placeholder:text-white'
@@ -164,9 +153,6 @@ const DeclensionPractice = ({
     if (!checkedAnswers) {
       return ''
     }
-    if (isSpeakSkippedField(field)) {
-      return 'text-zinc-500'
-    }
     if (isCorrect(attempt, field.answer)) {
       return 'text-green-600'
     }
@@ -175,7 +161,7 @@ const DeclensionPractice = ({
 
   const getCorrectAnswerTextJsx = (attempt = '', field) => {
     const textColor = getCorrectAnswerTextColor(attempt, field)
-    return checkedAnswers && (!isCorrect(attempt, field.answer) || practiceType === 'speak') && (
+    return checkedAnswers && !isCorrect(attempt, field.answer) && (
       <p className={cn('mt-1 text-sm', textColor)}>
         Correct answer: {field.answer}&nbsp;
       </p>
@@ -239,8 +225,7 @@ const DeclensionPractice = ({
       typeOneHideOthers &&
       (field.case !== typeOneField.case || field.number !== typeOneField.number) &&
       !checkedAnswers
-    const placeholderLabel = practiceType === 'type' ? 'Enter' : 'Say'
-    const disabled = practiceType === 'speak'
+    const placeholderLabel = 'Enter'
     const gridAreaClass = fieldGridClassMap[caseNumberCamel]
 
     return (
@@ -263,7 +248,6 @@ const DeclensionPractice = ({
             autoComplete='off'
             id={caseNumberShishkabob}
             onKeyDown={handleKeyDown}
-            disabled={disabled}
           />
           {getCorrectAnswerTextJsx(attempts[caseNumberCamel], field)}
         </div>

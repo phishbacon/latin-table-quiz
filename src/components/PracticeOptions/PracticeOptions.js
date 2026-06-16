@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import { useRouter } from 'next/router'
 
 import { useAppContext } from '../../context/AppContext'
@@ -6,9 +6,8 @@ import messages from '../AutoDismissAlert/messages'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-
+import { Label } from '@/components/ui/label'
 const PracticeOptions = () => {
   const router = useRouter()
   const {
@@ -17,8 +16,6 @@ const PracticeOptions = () => {
     setUseMacrons,
     setPracticeMode,
     practiceMode,
-    setPracticeType,
-    practiceType,
     typeOneHideOthers,
     setTypeOneHideOthers,
     enabledDeclensions,
@@ -61,24 +58,6 @@ const PracticeOptions = () => {
           />
           <Label htmlFor='use-macrons'>Use Macrons</Label>
         </div>
-
-        <fieldset className='space-y-3'>
-          <legend className='text-base font-semibold'>Type</legend>
-          <RadioGroup
-            value={practiceType}
-            onValueChange={setPracticeType}
-            className='flex flex-wrap gap-x-6 gap-y-2'
-          >
-            <div className='flex items-center gap-2'>
-              <RadioGroupItem id='type-type' value='type' />
-              <Label htmlFor='type-type'>Type Cases</Label>
-            </div>
-            <div className='flex items-center gap-2'>
-              <RadioGroupItem id='type-speak' value='speak' />
-              <Label htmlFor='type-speak'>Say Cases</Label>
-            </div>
-          </RadioGroup>
-        </fieldset>
 
         <fieldset className='space-y-3'>
           <legend className='text-base font-semibold'>Declensions</legend>

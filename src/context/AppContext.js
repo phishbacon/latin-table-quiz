@@ -12,8 +12,7 @@ const BOOLEAN_OPTIONS = {
 }
 
 const STRING_OPTIONS = {
-  practiceMode: 'all-cases',
-  practiceType: 'type'
+  practiceMode: 'all-cases'
 }
 
 const readBooleanOption = (name, fallback) => {
@@ -55,14 +54,12 @@ export const AppProvider = ({ children }) => {
   const [useMacrons, setUseMacronsState] = useState(BOOLEAN_OPTIONS.useMacrons)
   const [practiceMode, setPracticeModeState] = useState(STRING_OPTIONS.practiceMode)
   const [typeOneHideOthers, setTypeOneHideOthersState] = useState(BOOLEAN_OPTIONS.typeOneHideOthers)
-  const [practiceType, setPracticeTypeState] = useState(STRING_OPTIONS.practiceType)
   const [enabledDeclensions, setEnabledDeclensionsState] = useState([])
 
   useEffect(() => {
     setUseMacronsState(readBooleanOption('useMacrons', BOOLEAN_OPTIONS.useMacrons))
     setPracticeModeState(readStringOption('practiceMode', STRING_OPTIONS.practiceMode))
     setTypeOneHideOthersState(readBooleanOption('typeOneHideOthers', BOOLEAN_OPTIONS.typeOneHideOthers))
-    setPracticeTypeState(readStringOption('practiceType', STRING_OPTIONS.practiceType))
     setEnabledDeclensionsState(readJsonOption('enabledDeclensions', []))
   }, [])
 
@@ -86,13 +83,6 @@ export const AppProvider = ({ children }) => {
     setTypeOneHideOthersState(value)
     if (typeof window !== 'undefined') {
       window.localStorage.setItem('typeOneHideOthers', `${value}`)
-    }
-  }, [])
-
-  const setPracticeType = useCallback((value) => {
-    setPracticeTypeState(value)
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem('practiceType', value)
     }
   }, [])
 
@@ -138,14 +128,12 @@ export const AppProvider = ({ children }) => {
     useMacrons,
     practiceMode,
     typeOneHideOthers,
-    practiceType,
     enabledDeclensions,
     setUser,
     clearUser,
     setUseMacrons,
     setPracticeMode,
     setTypeOneHideOthers,
-    setPracticeType,
     setEnabledDeclensions,
     msgAlert,
     deleteAlert,
@@ -156,13 +144,11 @@ export const AppProvider = ({ children }) => {
     useMacrons,
     practiceMode,
     typeOneHideOthers,
-    practiceType,
     enabledDeclensions,
     clearUser,
     setUseMacrons,
     setPracticeMode,
     setTypeOneHideOthers,
-    setPracticeType,
     setEnabledDeclensions,
     msgAlert,
     deleteAlert,
